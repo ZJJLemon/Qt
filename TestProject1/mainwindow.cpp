@@ -1,11 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
+QTextEdit *MainWindow::DebugEdit = nullptr;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    DebugEdit = ui->debugEdit;
 
     QTimer *timer2 = new QTimer(this);// 定时器2进行定时扫描串口读取数据
     timer2->setSingleShot(false);//设定为循环定时
@@ -86,6 +89,49 @@ void MainWindow::getFileList() // 选择文件夹，获取文件名显示列表
     }
 
 
+}
+
+void MainWindow::outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+
+    // 加锁
+    static QMutex mutex;
+    mutex.lock();
+
+    if(type == QtDebugMsg)
+    {//界面显示
+        QString message = QString("%1 %2").arg(msg).arg("\r\n");
+
+    }
+    QString text;
+    if(type == QtInfoMsg){
+        text = QString("Info:");
+    }
+    if(type == QtWarningMsg){
+        text = QString("Warning:");
+    }
+    if(type == QtCriticalMsg){
+        text = QString("Critical:");
+    }
+    if(type == QtFatalMsg){
+        text = QString("Fatal:");
+    }
+    // 设置输出信息格式
+    QString current_date_time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    QString current_date = QString("(%1)").arg(current_date_time);
+    QString message = QString("%1 %2 %3 %4").arg(text).arg(" ").arg(msg).arg(current_date);
+
+    // 输出信息至文件中（读写、追加形式）
+    QFile file("log.txt");
+    file.open(QIODevice::WriteOnly | QIODevice::Append);
+    QTextStream text_stream(&file);
+    text_stream << message << "\r\n";
+    DebugEdit->append(message); //打印调试信息
+
+    file.flush();
+    file.close();
+    // 解锁
+    mutex.unlock();
 }
 
 
@@ -258,9 +304,10 @@ void MainWindow::on_BackHome_clicked() //返回主界面
     ui->stackedWidget->setCurrentIndex(0);
 }
 
-void MainWindow::on_Log_clicked()
+void MainWindow::on_Log_clicked() //日志文件页面
 {
     ui->stackedWidget->setCurrentIndex(4);
+
 }
 
 // /////////////////
@@ -435,6 +482,9 @@ void MainWindow::on_openFile_clicked() //打开文件夹读取文件信息
 {
     getFileList();
 }
+
+
+
 
 
 void MainWindow::on_clearFile_clicked() //清空显示列表

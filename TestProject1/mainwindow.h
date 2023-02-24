@@ -19,8 +19,8 @@
 #include<QFileInfo>
 #include<QFileDialog>
 #include<QDir>
-
-
+#include<QMutex>
+#include<QTextEdit>
 
 
 QT_CHARTS_USE_NAMESPACE
@@ -45,6 +45,8 @@ public:
 
     void getFileList();// 选择文件夹，获取文件名显示列表
 
+   static void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg);
+
 
 
     void drawpoints();
@@ -53,6 +55,8 @@ public:
     int ReceiveFlag=0;
 private:
     Ui::MainWindow *ui;
+
+    static QTextEdit *DebugEdit;
 
     QChart *chart;
     QSerialPort *serialPort;
