@@ -67,7 +67,7 @@ void MainWindow::serialPortReadyRead() //串口数据读取
 
 void MainWindow::getFileList() // 选择文件夹，获取文件名显示列表
 {
-
+    ui->DataListView->clear();
     QString mFolderPath = QFileDialog::getExistingDirectory(NULL, "Open Folder", "D:/QT");
     if (mFolderPath.isEmpty()) return;
     QDir dir(mFolderPath);
@@ -257,6 +257,12 @@ void MainWindow::on_BackHome_clicked() //返回主界面
 {
     ui->stackedWidget->setCurrentIndex(0);
 }
+
+void MainWindow::on_Log_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(4);
+}
+
 // /////////////////
 
 void MainWindow::on_serialSelect_activated(int index) //串口端口选择槽函数
@@ -435,4 +441,6 @@ void MainWindow::on_clearFile_clicked() //清空显示列表
 {
     ui->DataListView->clear();
 }
+
+
 

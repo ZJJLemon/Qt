@@ -22,6 +22,7 @@
 
 
 
+
 QT_CHARTS_USE_NAMESPACE
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -95,5 +96,6 @@ private slots:
     void on_SendText_clicked();
     void on_openFile_clicked();
     void on_clearFile_clicked();
+    void on_Log_clicked();
 };
 #endif // MAINWINDOW_H
